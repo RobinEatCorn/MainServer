@@ -7,8 +7,8 @@ const colors=require("colors");
 //const S1NCM=require("C:\\NCMMonitorV2\\server");
 
 var VisitorDB=new sqlite3.Database("./visitor.db");
-
-var pathMap=fs.readFileSync("./pathMap.json");
+var pathMap=JSON.parse(fs.readFileSync("./pathMap.json"));
+var certs={cert:fs.readFileSync("./cert/cert.pem"),key:fs.readFileSync("./cert/key.pem")};
 Object.keys(pathMap).forEach((key)=>{pathMap[key]=require(pathMap[key]);});
 
 
@@ -45,12 +45,7 @@ function handleRequest(req,res){
     }
 }
 
-var srvHttps=https.createServer(
-	{
-		cert:fs.readFileSync("./cert/cert.pem"),
-		key:fs.readFileSync("./cert/key.pem")
-	},
-	handleRequest
+var srvHttps=https.createServer(certs,handleRequest
 );
 srvHttps.listen(443);
 
